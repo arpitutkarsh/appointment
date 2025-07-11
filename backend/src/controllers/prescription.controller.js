@@ -5,9 +5,6 @@ import { Appointment } from "../models/appointment.model.js";
 import { User } from "../models/user.model.js";
 import { Prescription } from "../models/prescription.model.js";
 
-
-
-
 const createPrescription = async (req, res) => {
   try {
     const {
@@ -21,6 +18,8 @@ const createPrescription = async (req, res) => {
       bp,
       spo2,
       temperature,
+      notes, // ✅ new
+      
     } = req.body;
 
     // Validate required fields
@@ -30,7 +29,7 @@ const createPrescription = async (req, res) => {
 
     // Fetch appointment
     const appointment = await Appointment.findById(appointmentId)
-      .populate('docId', "name email speciality address")
+      .populate('docId', "name email speciality address phone")
       .populate('userId');
 
     if (!appointment) {
@@ -46,7 +45,7 @@ const createPrescription = async (req, res) => {
       doctor: {
         doctorId: doctor._id,
         name: doctor.name,
-        speciality: doctor.speciality,
+        specialization: doctor.speciality,
         email: doctor.email,
         phone: doctor.phone,
         address: doctor.address
@@ -65,6 +64,8 @@ const createPrescription = async (req, res) => {
       lifestyle: lifestyle || '',
       tests: tests || '',
       followUp: followUp || '',
+      notes: notes || '', // ✅ add notes
+      
       medicines,
       pulseRate: pulseRate || '0',
       bp: bp || '0/0',
@@ -86,21 +87,28 @@ const createPrescription = async (req, res) => {
   }
 };
 
+const getPrescription = async (req, res) => {
+  try {
+    const { appointmentId } = req.body;
 
-const getPrescription = async(req, res) => {
-    try {
-        const {appointmentId} = req.body
-        if(!appointmentId){
-            throw new apiError(401, "No Appointment Found")
-        }
-        const prescription = await Prescription.findOne({appointmentId})
-        if(!prescription){
-            throw new apiError(401, "No Prescription Found")
-        }
-        return res.status(200).json(new ApiResponse(200, prescription, "Successfully Found Prescription"))
-    } catch (error) {
-        console.log(error)
-        throw new apiError(401, "Error Fetching Prescription")
+    if (!appointmentId) {
+      throw new apiError(401, "No Appointment Found");
     }
-}
-export {createPrescription, getPrescription}
+
+    const prescription = await Prescription.findOne({ appointmentId });
+
+    if (!prescription) {
+      throw new apiError(401, "No Prescription Found");
+    }
+
+    return res.status(200).json(new ApiResponse(200, prescription, "Successfully Found Prescription"));
+
+  } catch (error) {
+    console.log("Error in getPrescription:", error);
+    return res.status(error.statusCode || 500).json(
+      new ApiResponse(error.statusCode || 500, null, error.message || "Error Fetching Prescription")
+    );
+  }
+};
+
+export { createPrescription, getPrescription };

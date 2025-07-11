@@ -61,19 +61,22 @@ function Appointments() {
             <p className="text-green-600 font-semibold">{rupees} {item.docData.fee}</p>
 
             <div className="flex items-center gap-3 max-sm:mt-2">
-              {item.completed && !item.cancelled? (
-                <p className="text-green-500 font-semibold">Completed</p>
-              ) : item.cancelled && !item.completed ? (
-                <p className="text-red-500 font-semibold">Cancelled</p>
-              ) : (
-                <button>
-                  <img
-                    onClick={() => cancelAppointment(item._id)}
-                    src={assets.cancel_icon}
-                    alt="Cancel"
-                  />
-                </button>
-              )}
+              {item.isCompleted ? (
+  <button className="text-green-600 font-semibold text-xs border border-green-500 px-2 py-1 rounded-full cursor-default">
+    Appointment Completed
+  </button>
+) : item.cancelled ? (
+  <p className="text-red-500 font-semibold text-xs">Cancelled</p>
+) : (
+  <button onClick={() => cancelAppointment(item._id)}>
+    <img
+      src={assets.cancel_icon}
+      alt="Cancel"
+      className="w-6 h-6 hover:scale-110 transition-transform"
+    />
+  </button>
+)}
+
             </div>
 
           </div>

@@ -18,6 +18,7 @@ function Register() {
   const [degree, setDegree] = useState('')
   const [address1, setAddress1] = useState('')
   const [address2, setAddress2] = useState('')
+  const [showCommissionAlert, setShowCommissionAlert] = useState(true)
 
   const { backendUrl } = useContext(DoctorContext)
   const navigate = useNavigate()
@@ -107,6 +108,19 @@ function Register() {
           </ul>
         </div>
         <div className='bg-white px-10 py-10 rounded-2xl shadow-lg overflow-y-scroll max-h-[80vh]'>
+        {showCommissionAlert && (
+  <div className="flex justify-between items-center bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded relative mb-4">
+    <span>
+      <strong>Notice:</strong> 5% of your monthly revenue will be deducted as service commission by BookTheDoc.
+    </span>
+    <button
+      onClick={() => setShowCommissionAlert(false)}
+      className="ml-4 text-xl font-bold leading-none focus:outline-none"
+    >
+      ×
+    </button>
+  </div>
+)}
 
           {/* Upload */}
           <div className='flex items-center gap-4 mb-10 text-black font-semibold'>

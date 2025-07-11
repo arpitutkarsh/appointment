@@ -17,38 +17,19 @@ function DoctorAppointment() {
     spo2: '',
     pulseRate: '',
     temperature: '',
+    
+    notes: '',
     medicines: [{ name: '', dosage: '', frequency: '', duration: '' }]
   });
 
-
   const frequencyOptions = [
-    "Once Daily - OD",
-    "Twice Daily - BD",
-    "Thrice Daily - TDS",
-    "Four Times Daily - QID",
-    "At Bedtime - QHS",
-    "Before Meals - AC",
-    "After Meals - PC",
-    "As Needed - PRN",
-    "SOS(if Necessary)",
-    "Immediately - STAT - One Time Urgent Dose",
-    "Every 4 hours - Q4H",
-    "Every 6 hours - Q6H",
-    "Every 8 hours - Q8H",
-    "Every 2 hours - Q2H",
-    "Every 15 minutes - Q15min",
-    "Every 30 minutes - Q30min",
-    "One a Week - QW",
-    "Every 2 Week",
-    "Every 3 weeks",
-    "Once a Month",
-    "Every 2/3 Months",
-    "Four Times a Day(Before Meals) - QID AC",
-    "Four Times a Day(after Meals) - QID PC",
-    "Every Morning",
-    "At Noon",
-    "Every Night",
-    
+    "Once Daily - OD", "Twice Daily - BD", "Thrice Daily - TDS", "Four Times Daily - QID",
+    "At Bedtime - QHS", "Before Meals - AC", "After Meals - PC", "As Needed - PRN",
+    "SOS(if Necessary)", "Immediately - STAT - One Time Urgent Dose", "Every 4 hours - Q4H",
+    "Every 6 hours - Q6H", "Every 8 hours - Q8H", "Every 2 hours - Q2H", "Every 15 minutes - Q15min",
+    "Every 30 minutes - Q30min", "One a Week - QW", "Every 2 Week", "Every 3 weeks",
+    "Once a Month", "Every 2/3 Months", "Four Times a Day(Before Meals) - QID AC",
+    "Four Times a Day(after Meals) - QID PC", "Every Morning", "At Noon", "Every Night","Alternate Days"
   ];
 
   useEffect(() => {
@@ -95,29 +76,14 @@ function DoctorAppointment() {
 
         <div className="bg-white border rounded-lg shadow-md text-sm max-h-[80vh] overflow-y-scroll min-h-[50vh]">
           <div className="max-sm:hidden grid grid-cols-[0.5fr_2fr_1fr_1fr_1fr_2fr_1fr_1fr_1fr] gap-3 py-3 px-6 border-b font-semibold bg-gray-100 sticky top-0 z-10 text-gray-700">
-            <p>#</p>
-            <p>Patient</p>
-            <p>Payment</p>
-            <p>Age</p>
-            <p>Gender</p>
-            <p>Date & Time</p>
-            <p>Payment Status</p>
-            <p>Fees</p>
-            <p>Action</p>
+            <p>#</p><p>Patient</p><p>Payment</p><p>Age</p><p>Gender</p><p>Date & Time</p><p>Payment Status</p><p>Fees</p><p>Action</p>
           </div>
-
+          
           {appointments.reverse().map((item, index) => (
-            <div
-              key={item._id}
-              className="grid grid-cols-[0.5fr_2fr_1fr_1fr_1fr_2fr_1fr_1fr_1fr] gap-3 py-4 px-6 items-center border-b hover:bg-blue-50 transition"
-            >
+            <div key={item._id} className="grid grid-cols-[0.5fr_2fr_1fr_1fr_1fr_2fr_1fr_1fr_1fr] gap-3 py-4 px-6 items-center border-b hover:bg-blue-50 transition">
               <p className="text-gray-600">{index + 1}</p>
               <div className="flex items-center gap-2">
-                <img
-                  src={item.userData?.image || 'https://via.placeholder.com/40'}
-                  alt="patient"
-                  className="w-9 h-9 rounded-full object-cover border"
-                />
+                <img src={item.userData?.image || 'https://via.placeholder.com/40'} alt="patient" className="w-9 h-9 rounded-full object-cover border" />
                 <p className="font-medium text-gray-800">{item.userData?.name || "Unknown"}</p>
               </div>
               <p className="text-gray-600">{item.payment ? "Online" : "Cash"}</p>
@@ -135,49 +101,27 @@ function DoctorAppointment() {
                   <p className="text-green-600 font-semibold text-xs">Appointment Completed</p>
                 ) : (
                   <>
-                    <img
-                      onClick={() => cancelAppointment(item._id)}
-                      src={assets.cancel_icon}
-                      alt="Cancel"
-                      className="w-5 h-5 cursor-pointer hover:scale-110 transition"
-                    />
-                    <img
-                      onClick={() => completeAppointment(item._id)}
-                      src={assets.tick_icon}
-                      alt="Complete"
-                      className="w-5 h-5 cursor-pointer hover:scale-110 transition"
-                    />
-                    <p
-                      onClick={() => {
-                        setSelectedAppointment(item);
-                        setShowPrescriptionDialog(true);
-                      }}
-                      className="text-xs font-medium px-3 py-1 rounded-full bg-blue-100 text-blue-700 border border-blue-300 shadow-sm hover:bg-blue-200 transition-all cursor-pointer whitespace-nowrap"
-                    >
+                    <img onClick={() => cancelAppointment(item._id)} src={assets.cancel_icon} alt="Cancel" className="w-5 h-5 cursor-pointer hover:scale-110 transition" />
+                    <img onClick={() => completeAppointment(item._id)} src={assets.tick_icon} alt="Complete" className="w-5 h-5 cursor-pointer hover:scale-110 transition" />
+                    <p onClick={() => { setSelectedAppointment(item); setShowPrescriptionDialog(true); }} className="text-xs font-medium px-3 py-1 rounded-full bg-blue-100 text-blue-700 border border-blue-300 shadow-sm hover:bg-blue-200 transition-all cursor-pointer whitespace-nowrap">
                       Prescription
                     </p>
                   </>
                 )}
-
               </div>
             </div>
-
           ))}
         </div>
       </div>
 
       {showPrescriptionDialog && selectedAppointment && (
-        <div className="fixed inset-0  backdrop-blur-sm overflow-y-auto z-50">
+        <div className="fixed inset-0 backdrop-blur-sm overflow-y-auto z-50">
           <div className="min-h-screen flex justify-center py-12 px-4">
             <div className="bg-white rounded-lg p-8 w-full max-w-6xl shadow-lg relative">
-              <button
-                onClick={() => setShowPrescriptionDialog(false)}
-                className="absolute top-3 right-4 text-gray-500 hover:text-gray-700 text-2xl"
-              >
-                &times;
-              </button>
+              <button onClick={() => setShowPrescriptionDialog(false)} className="absolute top-3 right-4 text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
               <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Prescription Form</h2>
               <h2 className='text-sm underline font-bold mb-6 mt-[-20] text-gray-800 text-center'>Powered by BooktheDoc</h2>
+
               <div className="bg-yellow-100 border border-yellow-300 text-yellow-800 text-sm p-4 rounded mb-6">
                 <h3 className="font-semibold mb-2">Necessary Steps to be Performed by the Doctor:</h3>
                 <ul className="list-disc list-inside space-y-1">
@@ -188,18 +132,18 @@ function DoctorAppointment() {
                   <li>Clearly state any lifestyle or dietary recommendations if needed.</li>
                   <li>Include all relevant tests to be done with instructions (if any).</li>
                   <li>Specify a follow-up date for the patient’s next visit.</li>
-                  <li>Ensure the prescription is clear, concise, and free of errors.</li>
                   <li>Click <strong>“Save Prescription”</strong> only after reviewing all fields.</li>
-                  <li>To ensure Integrity in our Databases Doctors are advised to please Click on Appintment Completed Button after Saving the Prescription. </li>
                 </ul>
               </div>
+
+              {/* Doctor and Patient Info */}
               <div className="grid grid-cols-2 gap-6 text-sm mb-8">
                 <div className="space-y-1">
-                  <p ><span className="font-medium">Doctor's Name:</span> {selectedAppointment.docData.name}</p>
-                  <p ><span className="font-medium">Qualification:</span> {selectedAppointment.docData.degree}</p>
-                  <p ><span className="font-medium">Clinic Address:</span> {selectedAppointment.docData.address.line1}<br />{selectedAppointment.docData.address.line2}</p>
+                  <p><span className="font-medium">Doctor's Name:</span> {selectedAppointment.docData.name}</p>
+                  <p><span className="font-medium">Qualification:</span> {selectedAppointment.docData.degree}</p>
+                  <p><span className="font-medium">Clinic Address:</span> {selectedAppointment.docData.address.line1}<br />{selectedAppointment.docData.address.line2}</p>
                 </div>
-                <div className=" space-y-1">
+                <div className="space-y-1">
                   <p><span className="font-medium">Patient Name:</span> {selectedAppointment.userData?.name}</p>
                   <p><span className="font-medium">Patient Gender:</span> {selectedAppointment.userData?.gender}</p>
                   <p><span className="font-medium">DOB:</span> {selectedAppointment.userData?.dob}</p>
@@ -208,34 +152,24 @@ function DoctorAppointment() {
                 </div>
               </div>
 
+              {/* Vitals */}
               <div className="mb-6 font-mono">
                 <label className="block text-sm font-semibold mb-2">Vitals</label>
                 <div className="grid grid-cols-4 gap-4">
-                  <div>
-                    <label className="block text-xs text-gray-600 mb-1">Blood Pressure (BP)</label>
-                    <input type="text" placeholder="e.g. 120/80" value={prescriptionData.bp} onChange={(e) => setPrescriptionData({ ...prescriptionData, bp: e.target.value })} className="w-full p-2 border rounded text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-600 mb-1">SpO₂ (%)</label>
-                    <input type="text" placeholder="e.g. 97%" value={prescriptionData.spo2} onChange={(e) => setPrescriptionData({ ...prescriptionData, spo2: e.target.value })} className="w-full p-2 border rounded text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-600 mb-1">Pulse Rate (bpm)</label>
-                    <input type="text" placeholder="e.g. 72" value={prescriptionData.pulseRate} onChange={(e) => setPrescriptionData({ ...prescriptionData, pulseRate: e.target.value })} className="w-full p-2 border rounded text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-600 mb-1">Temperature (°C)</label>
-                    <input type="text" placeholder="e.g. 98.6" value={prescriptionData.temperature} onChange={(e) => setPrescriptionData({ ...prescriptionData, temperature: e.target.value })} className="w-full p-2 border rounded text-sm" />
-                  </div>
+                  <div><label className="block text-xs text-gray-600 mb-1">Blood Pressure (BP)</label><input type="text" placeholder="e.g. 120/80" value={prescriptionData.bp} onChange={(e) => setPrescriptionData({ ...prescriptionData, bp: e.target.value })} className="w-full p-2 border rounded text-sm" /></div>
+                  <div><label className="block text-xs text-gray-600 mb-1">SpO₂ (%)</label><input type="text" placeholder="e.g. 97%" value={prescriptionData.spo2} onChange={(e) => setPrescriptionData({ ...prescriptionData, spo2: e.target.value })} className="w-full p-2 border rounded text-sm" /></div>
+                  <div><label className="block text-xs text-gray-600 mb-1">Pulse Rate (bpm)</label><input type="text" placeholder="e.g. 72" value={prescriptionData.pulseRate} onChange={(e) => setPrescriptionData({ ...prescriptionData, pulseRate: e.target.value })} className="w-full p-2 border rounded text-sm" /></div>
+                  <div><label className="block text-xs text-gray-600 mb-1">Temperature (°C)</label><input type="text" placeholder="e.g. 98.6" value={prescriptionData.temperature} onChange={(e) => setPrescriptionData({ ...prescriptionData, temperature: e.target.value })} className="w-full p-2 border rounded text-sm" /></div>
                 </div>
               </div>
 
-
+              {/* Diagnosis */}
               <div className="mb-6 font-mono">
                 <label className="block text-sm font-medium mb-1">Diagnosis</label>
                 <textarea className="w-full p-3 border rounded text-sm" placeholder='Patient Came with the Problem of - Fever Diagnosed with' rows={3} value={prescriptionData.diagnosis} onChange={(e) => setPrescriptionData({ ...prescriptionData, diagnosis: e.target.value })} />
               </div>
 
+              {/* Medicines */}
               <div className="mb-6 font-mono">
                 <label className="block text-sm font-semibold mb-2">Rx - Medicines</label>
                 {prescriptionData.medicines.map((med, index) => (
@@ -253,40 +187,52 @@ function DoctorAppointment() {
                 <button onClick={addMedicine} className="text-blue-600 hover:underline text-sm mt-1">+ Add Medicine</button>
               </div>
 
+              {/* Lifestyle */}
               <div className="mb-6 font-mono">
                 <label className="block text-sm font-medium mb-1">Diet / Lifestyle Recommendation</label>
                 <textarea className="w-full p-3 border rounded text-sm" rows={2} value={prescriptionData.lifestyle} onChange={(e) => setPrescriptionData({ ...prescriptionData, lifestyle: e.target.value })} />
               </div>
 
+              {/* Tests */}
               <div className="mb-6 font-mono">
                 <label className="block text-sm font-medium mb-1">Tests to be done</label>
                 <textarea className="w-full p-3 border rounded text-sm" rows={2} value={prescriptionData.tests} onChange={(e) => setPrescriptionData({ ...prescriptionData, tests: e.target.value })} />
               </div>
 
-              <div className="mb-8 font-mono">
+              {/* Follow Up */}
+              <div className="mb-6 font-mono">
                 <label className="block text-sm font-medium mb-1">Follow Up Date</label>
-                <input
-                  type="date"
-                  className="w-full p-3 border rounded text-sm"
-                  value={prescriptionData.followUp}
-                  onChange={(e) => setPrescriptionData({ ...prescriptionData, followUp: e.target.value })}
-                />
+                <input type="date" className="w-full p-3 border rounded text-sm" value={prescriptionData.followUp} onChange={(e) => setPrescriptionData({ ...prescriptionData, followUp: e.target.value })} />
+              </div>
+
+              
+
+              {/* General Notes */}
+              <div className="mb-8 font-mono">
+                <label className="block text-sm font-medium mb-1">General Notes</label>
+                <textarea className="w-full p-3 border rounded text-sm" rows={3} value={prescriptionData.notes} onChange={(e) => setPrescriptionData({ ...prescriptionData, notes: e.target.value })} />
               </div>
 
               <button
                 className="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition"
                 onClick={async () => {
-                  const success = await writePrescription(selectedAppointment._id, prescriptionData)
+                  const success = await writePrescription(selectedAppointment._id, prescriptionData);
                   if (success) {
-                    setPrescriptionsWritten(prev => [...prev, selectedAppointment._id])
-                    setShowPrescriptionDialog(false)
+                    setPrescriptionsWritten(prev => [...prev, selectedAppointment._id]);
+                    setShowPrescriptionDialog(false);
                     setPrescriptionData({
                       diagnosis: '',
                       lifestyle: '',
                       tests: '',
                       followUp: '',
+                      bp: '',
+                      spo2: '',
+                      pulseRate: '',
+                      temperature: '',
+                      
+                      notes: '',
                       medicines: [{ name: '', dosage: '', frequency: '', duration: '' }]
-                    })
+                    });
                   }
                 }}
               >
@@ -296,7 +242,6 @@ function DoctorAppointment() {
           </div>
         </div>
       )}
-
     </>
   );
 }
